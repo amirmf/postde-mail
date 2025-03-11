@@ -121,7 +121,7 @@ export class MailController {
   }
 
   async sendMailSubmissionSecond(id) {
-    // await new Promise(r => setTimeout(r, 2*60*1000));
+    await new Promise(r => setTimeout(r, 2*60*1000));
     const data: any = await this.getFormData(id);
     const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
     // const to = "amf.fard@gmail.com";
