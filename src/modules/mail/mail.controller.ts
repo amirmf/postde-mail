@@ -10,23 +10,12 @@ import { FormioSubmitDto } from './formio.dto';
 export class MailController {
   constructor(private readonly mailService: MailService) { }
 
-
   @Post('handle-submission')
   async formioWebhook(@Body() dto_: FormioSubmitDto) {
     const id = dto_.submission._id;
-    const dt: any = await this.getFormData(id);
-    const dto = { submission: dt.data };
-
-    const submit_day = dt.created.split('T')[0];
-
-    const counter = await this.mailService.increaseAdnGetCounter(submit_day);
-    await this.mailService.storeDB();
-    const invoiceId = ((submit_day.split('-')[2] + submit_day.split('-')[1] + submit_day.split('-')[0])) + '-' + counter.toString().padStart(5, '0');
-    dto.submission.invoiceID = invoiceId;
-    await this.updateFormData(id, dto.submission);
-    await this.sendMailSubmissionFirst(id);
-    this.sendMailSubmissionSecond(id);
+    await this.formioWebhook2(id);
   }
+
   @Get('handle-submission')
   async formioWebhook2(@Query('id') id) {
     const dt: any = await this.getFormData(id);
