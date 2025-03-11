@@ -70,7 +70,11 @@ export class MailController {
       .replaceAll('{{art}}', data.data.artDerNachsendung == 'privat' ? 'privaten' : 'gewerblichen');
 
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch(
+      {
+        args: ['--no-sandbox']
+      }
+    );
     const page = await browser.newPage();
     await page.setContent(html);
     const PDF_PATH = process.env.PDF_PATH ?? (__dirname + `/../../templates/pdf`);
@@ -169,7 +173,11 @@ export class MailController {
       .replaceAll('{{invoiceId}}', invoiceId);
 
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch(
+      {
+        args: ['--no-sandbox']
+      }
+    );
     const page = await browser.newPage();
     await page.setContent(html);
     const PDF_PATH = process.env.PDF_PATH ?? (__dirname + `/../../templates/pdf`);
