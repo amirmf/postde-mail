@@ -45,9 +45,9 @@ export class MailController {
 
   async sendMailSubmissionFirst(id) {
     const data: any = await this.getFormData(id);
-    // const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
+    const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
     // const to = "amf.fard@gmail.com";
-    const to = "nimagekko@gmail.com";
+    // const to = "nimagekko@gmail.com";
     const name = data.data.firmenname ?? (data.data.vorname + ' ' + data.data.nachname);
     const addr = data.data.nummer + ' ' + data.data.strasse + ' ' + data.data.ort;
     const zip = data.data.plz;
@@ -116,9 +116,9 @@ export class MailController {
   async sendMailSubmissionSecond(id) {
     await new Promise(r => setTimeout(r, 2*60*1000));
     const data: any = await this.getFormData(id);
-    // const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
+    const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
     // const to = "amf.fard@gmail.com";
-    const to = "nimagekko@gmail.com";
+    // const to = "nimagekko@gmail.com";
     const name = data.data.firmenname ?? (data.data.vorname + ' ' + data.data.nachname);
     const addr = data.data.nummer + ' ' + data.data.strasse + ' ' + data.data.ort;
     const orderDate = data.created.split('T')[0];
