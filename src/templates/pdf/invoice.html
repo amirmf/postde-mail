@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>invoice</title>
+</head>
+<style>
+    :root {
+        /* --bleeding: 0.5cm; */
+        /* --margin: 1cm; */
+    }
+
+    @page {
+        size: A4;
+        margin: 0;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0 auto;
+        padding: 0;
+        background: rgb(204, 204, 204);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .page {
+        display: inline-block;
+        position: relative;
+        height: 297mm;
+        width: 210mm;
+        font-size: 13px;
+        font-family: Arial, Helvetica, sans-serif;
+        margin: 2em auto;
+        /* padding: calc(var(--bleeding) + var(--margin)); */
+        /* box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5); */
+        background: white;
+    }
+
+    @media screen {
+        .page::after {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            width: calc(100% - var(--bleeding) * 2);
+            height: calc(100% - var(--bleeding) * 2);
+            margin: 0;
+            outline: thin dashed black;
+            pointer-events: none;
+            z-index: 9999;
+        }
+    }
+
+    @media print {
+        .page {
+            margin: 0;
+            overflow: hidden;
+        }
+    }
+</style>
+
+<body>
+    <div class="page">
+        <img src="https://nachsendeauftrag-buchen.de/header.png" alt="" style="width: 100%;">
+        <div style="padding:50px;padding-top: 90px;">
+            <div>{{name}}</div>
+            <div>{{addr}}</div>
+            <div>{{zip}}</div>
+            </p>
+            <br />
+            <br />
+            <br />
+            <p style="font-weight: bold;font-size: 18px;">Rechnung</p>
+            <div>
+                <div style="display: inline-block;width: 140px;">
+                    <div>Rechnungsdatum:</div>
+                    <div>Fälligkeitsdatum:</div>
+                    <div>Rechnungsnummer:</div>
+                </div>
+                <div style="display: inline-block;width: 280px;">
+                    <div>{{date1}}</div>
+                    <div>{{date2}}</div>
+                    <div>{{invoiceId}}</div>
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <div style="padding-right: 50px; display: flex;">
+                <div style="display: inline-block;width: 340px;">
+                    <div>Einrichten eines privaten Nachsedeauftrages für die Post</div>
+                    <div>für die Dauer von 6 Monaten</div>
+                </div>
+                <div style="display: inline-block;width: 300px;float: right; text-align: right;">
+                    <div>{{price}}</div>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <div>
+                        <div style="display: inline-block;width: 90px;float: right;">
+                            <p>&nbsp;</p>
+                            <p>{{price}}</p>
+                            <p><b>{{price}}</b></p>
+                        </div>
+                        <div style="display: inline-block;width: 140px;float: right;">
+                            <p>Mehrwertsteuer</p>
+                            <p>Summe Netto</p>
+                            <p><b>Summe inkl. MwSt.</b></p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div style="clear: both;">
+                <p style="font-weight: bold;font-size: 13px;">Zahlungsangaben:</p>
+                <div>
+                    <div style="display: inline-block;width: 140px;">
+                        <div>Konto:</div>
+                        <div>Bank:</div>
+                        <div>IBAN:</div>
+                        <div>BIC:</div>
+                        <div>Betrag:</div>
+                        <div>Verwendungszweck:</div>
+                    </div>
+                    <div style="display: inline-block;width: 300px;">
+                        <div>nachsendeauftrag-buchen.de</div>
+                        <div>DE97 5707 0324 0062 2829 00</div>
+                        <div>Postbank</div>
+                        <div>PBNKDEFFXXX</div>
+                        <div>{{price}}</div>
+                        <div>{{invoiceId}}</div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div style="clear: both;text-align: center;">
+                <br>
+                <br>
+                <br>
+                <p>&nbsp;</p>
+                <b>*** Bitte stets den Verwendungszweck bei der Überweisung mit angeben. ***</b>
+                <p>Die Rechnung ist zahlbar bis zum oben genannten Fälligkeitsdatum.</p>
+                <br>
+
+            </div>
+            <!-- End of your content -->
+        </div>
+        <img src="https://nachsendeauftrag-buchen.de/footer.png" alt="" style="width: 100%;">
+    </div>
+</body>
+
+</html>
