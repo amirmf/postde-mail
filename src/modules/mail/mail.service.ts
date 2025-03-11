@@ -51,6 +51,7 @@ export class MailService {
         attachments: params.attachments,
       };
       const response = await this.mailerService.sendMail(sendMailParams);
+      console.log('email sent');
 
     } catch (error) {
       this.logger.error(

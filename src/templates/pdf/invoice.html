@@ -71,6 +71,7 @@
         <img src="https://nachsendeauftrag-buchen.de/header.png" alt="" style="width: 100%;">
         <div style="padding:50px;padding-top: 90px;">
             <div>{{name}}</div>
+            <div>{{addrfull}}</div>
             <div>{{addr}}</div>
             <div>{{zip}}</div>
             </p>
@@ -98,11 +99,11 @@
             <br />
             <br />
             <div style="padding-right: 50px; display: flex;">
-                <div style="display: inline-block;width: 340px;">
-                    <div>Einrichten eines privaten Nachsedeauftrages für die Post</div>
+                <div style="display: inline-block;width: 380px;">
+                    <div>Einrichten eines {{art}} Nachsendeauftrages für die Post</div>
                     <div>für die Dauer von 6 Monaten</div>
                 </div>
-                <div style="display: inline-block;width: 300px;float: right; text-align: right;">
+                <div style="display: inline-block;width: 270px;float: right; text-align: right;">
                     <div>{{price}}</div>
                     <br />
                     <br />
@@ -114,7 +115,7 @@
                             <p>{{price}}</p>
                             <p><b>{{price}}</b></p>
                         </div>
-                        <div style="display: inline-block;width: 140px;float: right;">
+                        <div style="display: inline-block;width: 140px;float: right;text-align: left;">
                             <p>Mehrwertsteuer</p>
                             <p>Summe Netto</p>
                             <p><b>Summe inkl. MwSt.</b></p>
@@ -129,8 +130,8 @@
                 <div>
                     <div style="display: inline-block;width: 140px;">
                         <div>Konto:</div>
-                        <div>Bank:</div>
                         <div>IBAN:</div>
+                        <div>Bank:</div>
                         <div>BIC:</div>
                         <div>Betrag:</div>
                         <div>Verwendungszweck:</div>

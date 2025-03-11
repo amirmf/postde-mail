@@ -14,14 +14,14 @@ export class MailController {
   @Post('handle-submission')
   async formioWebhook(@Body() dto_: FormioSubmitDto) {
     const id = dto_.submission._id;
-    const dt:any = await this.getFormData(id);
-    const dto = {submission:dt.data};
+    const dt: any = await this.getFormData(id);
+    const dto = { submission: dt.data };
 
-    const submit_day = dt.created.split('T')[0];//#
+    const submit_day = dt.created.split('T')[0];
 
     const counter = await this.mailService.increaseAdnGetCounter(submit_day);
     await this.mailService.storeDB();
-    const invoiceId = ((submit_day.split('-')[2] + submit_day.split('-')[1] + submit_day.split('-')[0]))+'-'+ counter.toString().padStart(5, '0'); 
+    const invoiceId = ((submit_day.split('-')[2] + submit_day.split('-')[1] + submit_day.split('-')[0])) + '-' + counter.toString().padStart(5, '0');
     dto.submission.invoiceID = invoiceId;
     await this.updateFormData(id, dto.submission);
     await this.sendMailSubmissionFirst(id);
@@ -29,15 +29,25 @@ export class MailController {
   }
   @Get('handle-submission')
   async formioWebhook2(@Query('id') id) {
-    const dt:any = await this.getFormData(id);
-    const dto = {submission:dt.data};
+    const dt: any = await this.getFormData(id);
+    const dto = { submission: dt.data };
 
-    const submit_day = dt.created.split('T')[0];//#
+    const submit_day = dt.created.split('T')[0];
 
     const counter = await this.mailService.increaseAdnGetCounter(submit_day);
     await this.mailService.storeDB();
-    const invoiceId = ((submit_day.split('-')[2] + submit_day.split('-')[1] + submit_day.split('-')[0]))+'-'+ counter.toString().padStart(5, '0'); 
+    const invoiceId = ((submit_day.split('-')[2] + submit_day.split('-')[1] + submit_day.split('-')[0])) + '-' + counter.toString().padStart(5, '0');
     dto.submission.invoiceID = invoiceId;
+
+    const submit_day_formatted = submit_day.split('-')[2] + '.' + submit_day.split('-')[1] + '.' + submit_day.split('-')[0];
+    let theDate = new Date();
+    let theDate2 = new Date();
+    theDate2.setMinutes(theDate.getMinutes() + 2);
+    const date1 = submit_day_formatted + ' ' + theDate.toLocaleString("en-GB", { timeZone: "Europe/Berlin" }).split(', ')[1];
+    const date2 = submit_day_formatted + ' ' + theDate2.toLocaleString("en-GB", { timeZone: "Europe/Berlin" }).split(', ')[1];
+    dto.submission.date1 = date1.slice(0,-3);
+    dto.submission.date2 = date2.slice(0,-3);
+
     await this.updateFormData(id, dto.submission);
     await this.sendMailSubmissionFirst(id);
     this.sendMailSubmissionSecond(id);
@@ -45,14 +55,16 @@ export class MailController {
 
   async sendMailSubmissionFirst(id) {
     const data: any = await this.getFormData(id);
-    const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
-    // const to = "amf.fard@gmail.com";
+    // const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
+    const to = "amf.fard@gmail.com";
     // const to = "nimagekko@gmail.com";
     const name = data.data.firmenname ?? (data.data.vorname + ' ' + data.data.nachname);
-    const addr = data.data.nummer + ' ' + data.data.strasse + ' ' + data.data.ort;
-    const zip = data.data.plz;
+    const addrfull = data.data.adresszusatz ?? '';
+    const addr = data.data.strasse + ' ' + data.data.nummer;
+    const zip = data.data.plz + ' ' + data.data.ort;
     const startDate = data.data.spatererStartzeitpunkt;
-    const orderDate = data.created.split('T')[0];
+    let orderDate = data.created.split('T')[0];
+    orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
     const price = data.data.artDerNachsendung == 'privat' ? '119,90 EURO' : '129,90 EURO';
     const invoiceId = data.data.invoiceID;
 
@@ -60,11 +72,13 @@ export class MailController {
     html = html
       .replaceAll('{{name}}', name)
       .replaceAll('{{addr}}', addr)
+      .replaceAll('{{addrfull}}', addrfull)
       .replaceAll('{{zip}}', zip)
       .replaceAll('{{date1}}', orderDate)
       .replaceAll('{{date2}}', orderDate)
       .replaceAll('{{price}}', price)
-      .replaceAll('{{invoiceId}}', invoiceId);
+      .replaceAll('{{invoiceId}}', invoiceId)
+      .replaceAll('{{art}}', data.data.artDerNachsendung == 'privat' ? 'privaten' : 'gewerblichen');
 
 
     const browser = await puppeteer.launch();
@@ -114,27 +128,34 @@ export class MailController {
   }
 
   async sendMailSubmissionSecond(id) {
-    await new Promise(r => setTimeout(r, 2*60*1000));
+    // await new Promise(r => setTimeout(r, 2*60*1000));
     const data: any = await this.getFormData(id);
-    const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
-    // const to = "amf.fard@gmail.com";
+    // const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
+    const to = "amf.fard@gmail.com";
     // const to = "nimagekko@gmail.com";
     const name = data.data.firmenname ?? (data.data.vorname + ' ' + data.data.nachname);
-    const addr = data.data.nummer + ' ' + data.data.strasse + ' ' + data.data.ort;
-    const orderDate = data.created.split('T')[0];
+    const addr = data.data.strasse + ' ' + data.data.nummer;
+    const zip = data.data.plz + ' ' + data.data.ort;
+
+    let orderDate = data.created.split('T')[0];
+    orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
     const price = data.data.artDerNachsendung == 'privat' ? '119,90 EURO' : '129,90 EURO';
 
     const oldStreatNum = data.data.strasse + ' ' + data.data.nummer;
     const oldZipCode = data.data.plz;
     const oldCity = data.data.ort;
+    const oldAddrfull = data.data.adresszusatz ?? '';
 
     const streatNum = data.data.strasse1 + ' ' + data.data.nummer1;
     const zipCode = data.data.plz1;
     const city = data.data.ort1;
+    const addrfull = data.data.adresszusatz1 ?? '';
 
     const ip = data.metadata.headers['x-real-ip'];
 
     const invoiceId = data.data.invoiceID;
+    const date1 = data.data.date1;
+    const date2 = data.data.date2;
 
     let html = fs.readFileSync(__dirname + '/../../templates/pdf/pow.html', 'utf8');
     html = html
@@ -142,17 +163,19 @@ export class MailController {
       .replaceAll('{{ip}}', ip)
       .replaceAll('{{email}}', to)
 
+      .replaceAll('{{addrfull}}', addrfull)
       .replaceAll('{{oldStreatNum}}', oldStreatNum)
       .replaceAll('{{oldZipCode}}', oldZipCode)
       .replaceAll('{{oldCity}}', oldCity)
 
+      .replaceAll('{{oldAddrfull}}', oldAddrfull)
       .replaceAll('{{streatNum}}', streatNum)
       .replaceAll('{{zipCode}}', zipCode)
       .replaceAll('{{city}}', city)
 
       .replaceAll('{{addr}}', addr)
-      .replaceAll('{{date1}}', orderDate)
-      .replaceAll('{{date2}}', orderDate)
+      .replaceAll('{{date1}}', date1)
+      .replaceAll('{{date2}}', date2)
       .replaceAll('{{price}}', price)
       .replaceAll('{{invoiceId}}', invoiceId);
 
@@ -196,11 +219,11 @@ export class MailController {
     }
     return subm.data;
   }
-  
-  async updateFormData(id: string, data:any) {
+
+  async updateFormData(id: string, data: any) {
     const FORMIO_HOST = process.env.FORMIO_HOST ?? 'https://formio.ostaadx.ai';
     try {
-      const response = await axios.put(`${FORMIO_HOST}/postnachsendeauftrag/submission/${id}`, {data:data});
+      const response = await axios.put(`${FORMIO_HOST}/postnachsendeauftrag/submission/${id}`, { data: data });
       if (response.status == 200)
         console.log('successfully updated');
     } catch (error) {

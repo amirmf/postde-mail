@@ -74,7 +74,7 @@
             <br>
             <br>
             <div>
-                <p>Guten Tag {{name}}</p>    
+                <p>Guten Tag {{name}},</p>    
                 <p>wir freuen uns Ihnen mitteilen zu können, daß Ihr Auftrag erfolgreich bearbeitet wurde!</p>
             </div>
             <br />
@@ -96,12 +96,14 @@
                 <div style="display: inline-block;width: 320px;">
                     <p>Ihre bisherige Adresse:</p>
                     <div>{{name}}</div>
+                    <div>{{oldAddrfull}}</div>
                     <div>{{oldStreatNum}}</div>
                     <div>{{oldZipCode}}&nbsp;&nbsp;{{oldCity}}</div>
                 </div>
                 <div style="display: inline-block;width: 320px;">
                     <p>Ihre neue Adresse:</p>
                     <div>{{name}}</div>
+                    <div>{{addrfull}}</div>
                     <div>{{streatNum}}</div>
                     <div>{{zipCode}}&nbsp;&nbsp;{{city}}</div>
                 </div>
