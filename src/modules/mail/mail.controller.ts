@@ -55,10 +55,10 @@ export class MailController {
     let orderDate = data.created.split('T')[0];
     orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
     let price = '0';
-    if((data.data.nachsendeauftragFur+"")=="6") price = '107,94 EURO';
-    if((data.data.nachsendeauftragFur+"")=="12") price = '119,88 EURO';
-    if((data.data.nachsendeauftragFur1+"")=="6") price = '117,78 EURO';
-    if((data.data.nachsendeauftragFur1+"")=="12") price = '131,88 EURO';
+    if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="6m") price = '107,94 EURO';
+    if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="12m") price = '119,88 EURO';
+    if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="6m") price = '117,78 EURO';
+    if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="12m") price = '131,88 EURO';
       
     const invoiceId = data.data.invoiceID;
 
@@ -138,10 +138,10 @@ export class MailController {
     let orderDate = data.created.split('T')[0];
     orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
     let price = '0';
-    if((data.data.nachsendeauftragFur+"")=="6") price = '107,94 EURO';
-    if((data.data.nachsendeauftragFur+"")=="12") price = '119,88 EURO';
-    if((data.data.nachsendeauftragFur1+"")=="6") price = '117,78 EURO';
-    if((data.data.nachsendeauftragFur1+"")=="12") price = '131,88 EURO';
+    if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="6m") price = '107,94 EURO';
+    if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="12m") price = '119,88 EURO';
+    if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="6m") price = '117,78 EURO';
+    if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="12m") price = '131,88 EURO';
 
     const oldStreatNum = data.data.strasse + ' ' + data.data.nummer;
     const oldZipCode = data.data.plz;
