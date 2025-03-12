@@ -54,7 +54,12 @@ export class MailController {
     const startDate = data.data.spatererStartzeitpunkt;
     let orderDate = data.created.split('T')[0];
     orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
-    const price = data.data.artDerNachsendung == 'privat' ? '119,90 EURO' : '129,90 EURO';
+    let price = '0';
+    if((data.data.nachsendeauftragFur+"")=="6") price = '107,94 EURO';
+    if((data.data.nachsendeauftragFur+"")=="12") price = '119,88 EURO';
+    if((data.data.nachsendeauftragFur1+"")=="6") price = '117,78 EURO';
+    if((data.data.nachsendeauftragFur1+"")=="12") price = '131,88 EURO';
+      
     const invoiceId = data.data.invoiceID;
 
     let html = fs.readFileSync(__dirname + '/../../templates/pdf/invoice.html', 'utf8');
@@ -132,7 +137,11 @@ export class MailController {
 
     let orderDate = data.created.split('T')[0];
     orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
-    const price = data.data.artDerNachsendung == 'privat' ? '119,90 EURO' : '129,90 EURO';
+    let price = '0';
+    if((data.data.nachsendeauftragFur+"")=="6") price = '107,94 EURO';
+    if((data.data.nachsendeauftragFur+"")=="12") price = '119,88 EURO';
+    if((data.data.nachsendeauftragFur1+"")=="6") price = '117,78 EURO';
+    if((data.data.nachsendeauftragFur1+"")=="12") price = '131,88 EURO';
 
     const oldStreatNum = data.data.strasse + ' ' + data.data.nummer;
     const oldZipCode = data.data.plz;
