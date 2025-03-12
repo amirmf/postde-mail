@@ -63,7 +63,9 @@ export class MailController {
 
     let month = '6';
     if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="12m") month = '12';
+    if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="6m") month = '6';
     if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="12m") month = '12';
+    if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="6m") month = '6';
       
     const invoiceId = data.data.invoiceID;
 
