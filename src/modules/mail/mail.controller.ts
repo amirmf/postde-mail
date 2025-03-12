@@ -51,7 +51,8 @@ export class MailController {
     const addrfull = data.data.adresszusatz ?? '';
     const addr = data.data.strasse + ' ' + data.data.nummer;
     const zip = data.data.plz + ' ' + data.data.ort;
-    const startDate = data.data.spatererStartzeitpunkt;
+    let startDate = data.data.spatererStartzeitpunkt;
+    if(startDate.indexOf('-')!=-1) startDate=startDate.split('-')[2] + '.' + startDate.split('-')[1] + '.' + startDate.split('-')[0];
     let orderDate = data.created.split('T')[0];
     orderDate = orderDate.split('-')[2] + '.' + orderDate.split('-')[1] + '.' + orderDate.split('-')[0];
     let price = '0';
@@ -59,6 +60,10 @@ export class MailController {
     if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="12m") price = '119,88 EURO';
     if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="6m") price = '117,78 EURO';
     if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="12m") price = '131,88 EURO';
+
+    let month = '6';
+    if((data.data.artDerNachsendung=="privat"&&data.data.nachsendeauftragFur+"")=="12m") month = '12';
+    if((data.data.artDerNachsendung!="privat"&&data.data.nachsendeauftragFur1+"")=="12m") month = '12';
       
     const invoiceId = data.data.invoiceID;
 
@@ -70,6 +75,7 @@ export class MailController {
       .replaceAll('{{zip}}', zip)
       .replaceAll('{{date1}}', orderDate)
       .replaceAll('{{date2}}', orderDate)
+      .replaceAll('{{month}}', month )
       .replaceAll('{{price}}', price)
       .replaceAll('{{invoiceId}}', invoiceId)
       .replaceAll('{{art}}', data.data.artDerNachsendung == 'privat' ? 'privaten' : 'gewerblichen');
