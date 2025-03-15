@@ -16,6 +16,21 @@ export class MailController {
     await this.formioWebhook2(id);
   }
 
+  @Get('update-validate-addr')
+  async validateAddr(@Query('id') id) {
+    const dt: any = await this.getFormData(id);
+    const dto = { submission: dt.data };
+
+    const addr = + dto.submission.nummer+(dto.submission.adresszusatz ? (', '+dto.submission.adresszusatz) : '')+ ', ' +dto.submission.strasse + ', ' + dto.submission.ort+", Germany";
+    const addr1 = + dto.submission.nummer1+(dto.submission.adresszusatz1 ? (', '+dto.submission.adresszusatz1) : '')+ ', ' +dto.submission.strasse1 + ', ' + dto.submission.ort1+", Germany";
+    const validAddr = await this.mailService.validateAddr(dto.submission.plz,addr);
+    const validAddr1 = await this.mailService.validateAddr(dto.submission.plz1,addr1);
+    if(!!validAddr) dto.submission.validAddrOld = validAddr+"";
+    if(!!validAddr1) dto.submission.validAddrNew = validAddr1+"";
+
+    await this.updateFormData(id, dto.submission);
+  }
+
   @Get('handle-submission')
   async formioWebhook2(@Query('id') id) {
     const dt: any = await this.getFormData(id);
@@ -37,6 +52,13 @@ export class MailController {
     dto.submission.date1 = date1.slice(0,-3);
     dto.submission.date2 = date2.slice(0,-3);
 
+    const addr = + dto.submission.nummer+(dto.submission.adresszusatz ? (', '+dto.submission.adresszusatz) : '')+ ', ' +dto.submission.strasse + ', ' + dto.submission.ort+", Germany";
+    const addr1 = + dto.submission.nummer1+(dto.submission.adresszusatz1 ? (', '+dto.submission.adresszusatz1) : '')+ ', ' +dto.submission.strasse1 + ', ' + dto.submission.ort1+", Germany";
+    const validAddr = await this.mailService.validateAddr(dto.submission.plz,addr);
+    const validAddr1 = await this.mailService.validateAddr(dto.submission.plz1,addr1);
+    if(!!validAddr) dto.submission.validAddrOld = validAddr+"";
+    if(!!validAddr1) dto.submission.validAddrNew = validAddr1+"";
+
     await this.updateFormData(id, dto.submission);
     await this.sendMailSubmissionFirst(id);
     this.sendMailSubmissionSecond(id);
@@ -45,8 +67,6 @@ export class MailController {
   async sendMailSubmissionFirst(id) {
     const data: any = await this.getFormData(id);
     const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
-    // const to = "amf.fard@gmail.com";
-    // const to = "nimagekko@gmail.com";
     const name = data.data.firmenname ?? (data.data.vorname + ' ' + data.data.nachname);
     const addrfull = data.data.adresszusatz ?? '';
     const addr = data.data.strasse + ' ' + data.data.nummer;
@@ -147,8 +167,6 @@ export class MailController {
     await new Promise(r => setTimeout(r, 2*60*1000));
     const data: any = await this.getFormData(id);
     const to = data.data.eMailAdresse1 ?? data.data.eMailAdresse;
-    // const to = "amf.fard@gmail.com";
-    // const to = "nimagekko@gmail.com";
     const name = data.data.firmenname ?? (data.data.vorname + ' ' + data.data.nachname);
     const addr = data.data.strasse + ' ' + data.data.nummer;
     const zip = data.data.plz + ' ' + data.data.ort;

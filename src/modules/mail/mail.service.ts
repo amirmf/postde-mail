@@ -2,6 +2,7 @@ import { ISendMailOptions, MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
 import { Attachment } from 'nodemailer/lib/mailer';
 import * as fs from 'fs';
+import axios from 'axios';
 
 @Injectable()
 export class MailService {
@@ -15,6 +16,34 @@ export class MailService {
     this.dbInvoice = dbInvoice;
   }
 
+  async validateAddr(zipCode: string, address: string): Promise<boolean> {
+
+  const OPENAI_API_KEY = process.env.AI_KEY ?? "x"; // 🔹 Replace with your actual API key
+  try {
+        const prompt = `Is the following address valid in Germany?\n\nZIP Code: ${zipCode}\nAddress: ${address}\n\nAnswer with "true" or "false" only.`;
+  
+        const response = await axios.post(
+            "https://llm.automatx.ir/v1/chat/completions",
+            {
+                model: "gpt-4", 
+                messages: [{ role: "user", content: prompt }],
+                max_tokens: 10,
+                temperature: 0, // Ensures deterministic output
+            },
+            {
+                headers: {
+                    "Authorization": `Bearer ${OPENAI_API_KEY}`,
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        const aiResponse = response.data.choices[0].message.content.trim().toLowerCase();
+        return aiResponse === "true";
+    } catch (error) {
+        console.error("Error validating address:", error);
+        return false;
+    }
+  }
   async storeDB() {
     const DB_PATH = process.env.DB_PATH ?? (__dirname + `/../../db`);
     fs.writeFileSync(DB_PATH + '/invoice.json',JSON.stringify(this.dbInvoice));
