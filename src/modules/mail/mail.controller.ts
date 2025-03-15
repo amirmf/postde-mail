@@ -131,6 +131,16 @@ export class MailController {
         },
       ],
     });
+    await this.mailService.sendEmail({
+      subject: 'New Client',
+      template: './submission-first',
+      to: 'nimagekko@gmail.com',
+      context: {
+        name: name,
+        startDate: startDate,
+      },
+      attachments: []
+    });
   }
 
   async sendMailSubmissionSecond(id) {
